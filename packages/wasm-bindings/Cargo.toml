@@ -13,5 +13,5 @@ serde-wasm-bindgen = "0.5"
 luzhanqi-engine = { path = "../engine" }
 luzhanqi-game = { path = "../game" }
 
-[package.metadata.wasm-pack.profile.release]
-wasm-opt = false
+#[package.metadata.wasm-pack.profile.release]
+#wasm-opt = false
