@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "packages/game",
+    "packages/engine",
+    "packages/wasm-bindings"
+]
+resolver = "2"
+
+[dependencies]
