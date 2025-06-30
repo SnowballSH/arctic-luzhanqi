@@ -1,6 +1,6 @@
-use wasm_bindgen::prelude::*;
 use engine::Engine;
 use serde_wasm_bindgen::to_value;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct WasmEngine {
@@ -11,11 +11,9 @@ pub struct WasmEngine {
 impl WasmEngine {
     #[wasm_bindgen(constructor)]
     pub fn new() -> WasmEngine {
-        WasmEngine { inner: Engine::new() }
-    }
-
-    pub fn tick(&mut self) {
-        self.inner.tick();
+        WasmEngine {
+            inner: Engine::new(),
+        }
     }
 
     #[wasm_bindgen(js_name = getState)]

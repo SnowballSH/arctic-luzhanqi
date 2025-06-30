@@ -1,4 +1,4 @@
-use game::GameState;
+use game::board::GameState;
 
 pub struct Engine {
     state: GameState,
@@ -6,11 +6,9 @@ pub struct Engine {
 
 impl Engine {
     pub fn new() -> Self {
-        Self { state: GameState::new() }
-    }
-
-    pub fn tick(&mut self) {
-        self.state.apply_move();
+        Self {
+            state: GameState::new(),
+        }
     }
 
     pub fn state(&self) -> &GameState {
