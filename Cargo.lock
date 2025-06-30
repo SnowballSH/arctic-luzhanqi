@@ -50,6 +50,7 @@ name = "luzhanqi-wasm"
 version = "0.1.0"
 dependencies = [
  "luzhanqi-engine",
+ "luzhanqi-game",
  "serde",
  "serde-wasm-bindgen",
  "wasm-bindgen",
