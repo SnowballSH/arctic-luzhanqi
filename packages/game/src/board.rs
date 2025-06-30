@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::prng::PseudoRng;
+use serde::{Deserialize, Serialize};
 
 pub const NUM_SQUARES: usize = 65;
 pub type SquareIndex = u8;
@@ -119,21 +119,13 @@ pub mod sq {
 
     /// All playable squares for each side (excluding camps, mountains and frontline)
     pub const RED_SIDE: [SquareIndex; 25] = [
-        F1, F2, F3, F4, F5,
-        E1, E3, E5,
-        D1, D2, D4, D5,
-        C1, C3, C5,
-        B1, B2, B3, B4, B5,
-        A1, A2, A3, A4, A5,
+        F1, F2, F3, F4, F5, E1, E3, E5, D1, D2, D4, D5, C1, C3, C5, B1, B2, B3, B4, B5, A1, A2, A3,
+        A4, A5,
     ];
 
     pub const BLACK_SIDE: [SquareIndex; 25] = [
-        L1, L2, L3, L4, L5,
-        K1, K3, K5,
-        J1, J2, J4, J5,
-        I1, I3, I5,
-        H1, H2, H3, H4, H5,
-        M1, M2, M3, M4, M5,
+        L1, L2, L3, L4, L5, K1, K3, K5, J1, J2, J4, J5, I1, I3, I5, H1, H2, H3, H4, H5, M1, M2, M3,
+        M4, M5,
     ];
 }
 
@@ -440,13 +432,24 @@ impl GameState {
             };
 
             // Flag placed on a HQ
-            let hqs = if color == Color::Red { sq::RED_HQ } else { sq::BLACK_HQ };
+            let hqs = if color == Color::Red {
+                sq::RED_HQ
+            } else {
+                sq::BLACK_HQ
+            };
             let flag_sq = hqs[rng.gen_range(0..hqs.len())];
-            state.board[flag_sq as usize] = Some(Piece { ty: PieceType::Flag, color });
+            state.board[flag_sq as usize] = Some(Piece {
+                ty: PieceType::Flag,
+                color,
+            });
             available.retain(|&s| s != flag_sq);
 
             // Landmines placed on back rows
-            let back_rows = if color == Color::Red { sq::RED_BACK_ROWS } else { sq::BLACK_BACK_ROWS };
+            let back_rows = if color == Color::Red {
+                sq::RED_BACK_ROWS
+            } else {
+                sq::BLACK_BACK_ROWS
+            };
             for _ in 0..PieceType::Landmine.num_per_player() {
                 let choices: Vec<usize> = available
                     .iter()
@@ -456,11 +459,18 @@ impl GameState {
                     .collect();
                 let idx = choices[rng.gen_range(0..choices.len())];
                 let sq = available.remove(idx);
-                state.board[sq as usize] = Some(Piece { ty: PieceType::Landmine, color });
+                state.board[sq as usize] = Some(Piece {
+                    ty: PieceType::Landmine,
+                    color,
+                });
             }
 
             // Bombs not allowed on the first row
-            let first_row = if color == Color::Red { sq::RED_FIRST_ROW } else { sq::BLACK_FIRST_ROW };
+            let first_row = if color == Color::Red {
+                sq::RED_FIRST_ROW
+            } else {
+                sq::BLACK_FIRST_ROW
+            };
             for _ in 0..PieceType::Bomb.num_per_player() {
                 let choices: Vec<usize> = available
                     .iter()
@@ -470,7 +480,10 @@ impl GameState {
                     .collect();
                 let idx = choices[rng.gen_range(0..choices.len())];
                 let sq = available.remove(idx);
-                state.board[sq as usize] = Some(Piece { ty: PieceType::Bomb, color });
+                state.board[sq as usize] = Some(Piece {
+                    ty: PieceType::Bomb,
+                    color,
+                });
             }
 
             // Remaining piece types
@@ -530,9 +543,19 @@ impl GameState {
             }
 
             let (side, hq, first_row, back_rows) = if piece.color == Color::Red {
-                (&sq::RED_SIDE[..], &sq::RED_HQ[..], &sq::RED_FIRST_ROW[..], &sq::RED_BACK_ROWS[..])
+                (
+                    &sq::RED_SIDE[..],
+                    &sq::RED_HQ[..],
+                    &sq::RED_FIRST_ROW[..],
+                    &sq::RED_BACK_ROWS[..],
+                )
             } else {
-                (&sq::BLACK_SIDE[..], &sq::BLACK_HQ[..], &sq::BLACK_FIRST_ROW[..], &sq::BLACK_BACK_ROWS[..])
+                (
+                    &sq::BLACK_SIDE[..],
+                    &sq::BLACK_HQ[..],
+                    &sq::BLACK_FIRST_ROW[..],
+                    &sq::BLACK_BACK_ROWS[..],
+                )
             };
 
             if !side.contains(&sq) {
@@ -562,15 +585,20 @@ mod tests {
 
     #[test]
     fn test_random_start_is_legal() {
-        let state = GameState::random_start(1234);
-        assert!(state.is_startpos_legal());
+        for seed in 100..1000_u64 {
+            let state = GameState::random_start(seed.wrapping_mul(123456789));
+            assert!(state.is_startpos_legal());
+        }
     }
 
     #[test]
     fn test_illegal_position_detected() {
         let mut state = GameState::new();
         // Place a single red overall on an illegal square (frontline)
-        state.board[sq::G1 as usize] = Some(Piece { ty: PieceType::Overall, color: Color::Red });
+        state.board[sq::G1 as usize] = Some(Piece {
+            ty: PieceType::Overall,
+            color: Color::Red,
+        });
         assert!(!state.is_startpos_legal());
     }
 }
