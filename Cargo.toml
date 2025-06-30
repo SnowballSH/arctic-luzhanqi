@@ -5,5 +5,3 @@ members = [
     "packages/wasm-bindings"
 ]
 resolver = "2"
-
-[dependencies]
