@@ -1,0 +1,10 @@
+[package]
+name = "luzhanqi-engine"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "engine"
+path = "src/lib.rs"
+[dependencies]
+luzhanqi-game = { path = "../game" }
